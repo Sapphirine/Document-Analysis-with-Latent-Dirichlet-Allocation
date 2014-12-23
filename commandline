@@ -1,0 +1,41 @@
+# reuters major step
+
+WORK_DIR=/tmp/mahout-work-${USER}
+MAHOUT=bin/mahout
+export MAHOUT_LOCAL=true
+
+$MAHOUT seqdirectory -i ${WORK_DIR}/reuters-out -o ${WORK_DIR}/reuters-out-seqdir -c UTF-8 -chunk 64 -xm sequential
+
+$MAHOUT seq2sparse \
+    -i ${WORK_DIR}/reuters-out-seqdir/ \
+    -o ${WORK_DIR}/reuters-out-seqdir-sparse-lda-85 -ow --maxDFPercent 85 --namedVector \
+
+
+#$MAHOUT seq2sparse \
+#    -i ${WORK_DIR}/reuters-out-seqdir/ \
+#    -o ${WORK_DIR}/reuters-out-seqdir-sparse-lda-85 -ow --maxDFPercent 65 --#namedVector -ng 2 -lnorm \
+
+
+$MAHOUT rowid \
+    -i ${WORK_DIR}/reuters-out-seqdir-sparse-lda-85/tfidf-vectors \
+    -o ${WORK_DIR}/reuters-out-matrix-tfidf-85 \
+
+$MAHOUT cvb \
+    -i ${WORK_DIR}/reuters-out-matrix-tfidf-85/matrix \
+    -o ${WORK_DIR}/reuters-lda -k 10 -ow -x 20 \
+    -dict ${WORK_DIR}/reuters-out-seqdir-sparse-lda/dictionary.file-* \
+    -dt ${WORK_DIR}/reuters-lda-topics \
+    -mt ${WORK_DIR}/reuters-lda-model \
+
+$MAHOUT vectordump \
+    -i ${WORK_DIR}/reuters-lda-topics/part-m-00000 \
+    -o ${WORK_DIR}/reuters-lda/vectordump \
+    -vs 10 -p true \
+    -sort ${WORK_DIR}/reuters-lda-topics/part-m-00000 \
+
+$MAHOUT vectordump \
+    -i ${WORK_DIR}/reuters-lda/part-m-00000 \
+    -o ${WORK_DIR}/reuters-lda/vectordump2 \
+    -vs 10 -p true \
+    -d ${WORK_DIR}/reuters-out-seqdir-sparse-lda/dictionary.file-* \
+    -dt sequencefile -sort ${WORK_DIR}/reuters-lda/part-m-00000 \
