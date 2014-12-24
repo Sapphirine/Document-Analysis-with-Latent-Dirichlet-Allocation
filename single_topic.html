@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var kv=topicstr.substring(1,topicstr.length-2).split(",");
+        var h1 = document.createElement("h1");             
+        var t = document.createTextNode(docname);
+        h1.appendChild(t);
+        var topdiv=document.getElementById("topdiv");
+        topdiv.appendChild(h1); 
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Percent');
+        for(var i=0;i<kv.length;i++){
+          var key=kv[i].split(':')[0];
+          var value=kv[i].split(':')[1];
+          data.addRow([key,value*100]);
+        }
+
+        var options = {
+          title: 'Words distribution on topics',
+          vAxis: {title: 'Words',  titleTextStyle: {color: 'red'}}
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container" style="margin-top:20px">
+      <div id="topdiv" style="text-align:center"></div>
+      <hr>
+      <div id="chart_div" style="width: 900px; height: 500px;"></div>
+  </div>
+  </body>
+</html>
