@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Topics</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <script type="text/JavaScript">
+    function readdata(){
+      var xmlhttp=new XMLHttpRequest();
+      xmlhttp.open('GET','vectordump2',false);
+      xmlhttp.send(null);
+      var text=xmlhttp.responseText;
+      var regex=/\n/;
+      var lines=text.split(regex);
+      var leftdiv=document.getElementById("leftdiv");
+      var words=[];
+      for(var i=0;i<lines.length;i++){
+        regex=/\s/;
+        var strs=lines[i].split(regex);
+        if(strs.length<2) continue;
+        var topicid=strs[0];
+        var kv=strs[1].substring(1,strs[1].length-2);
+        var wordstr=kv.split(",");
+        for(var j=0;j<wordstr.length;j++){
+          var word=wordstr[j].split(":")[0];
+          if(words.indexOf(word)<0){
+            words.push(word);
+          }
+        }
+      }
+      for(var i=0;i<words.length;i++){
+        var para = document.createElement("a");
+        var t = document.createTextNode(words[i]);
+
+        para.href="#";
+        para.id=""+i;
+        para.onmouseover=function(e){e.target.style.backgroundColor="#1e90ff"};
+        para.onmouseleave=function(e,i){
+          if(e.target.id%2==0){
+            e.target.style.backgroundColor="#e6e6fa";
+          }
+          else{
+            e.target.style.backgroundColor="white";
+          }
+        }
+        para.setAttribute("style","display:block; \
+          font-family:\"Times New Roman\", Helvetica, Arial, sans-serif;font-size:14px; \
+          text-decoration:none; \
+          border-style:solid;border-width:1px;border-color:#6495ed; \
+          margin-bottom:-1px; \
+          height:42px; \
+          line_height:20px;position:relative;box-sizing: border-box; \
+          padding-bottom: 10px;padding-left: 15px;padding-right: 15px;padding-top: 10px;");
+        if(i==0){
+          para.style.borderTopLeftRadius="4px";
+          para.style.borderTopRightRadius="4px";
+        }
+        if(i%2==0){
+          para.style.backgroundColor="#e6e6fa";
+        }
+        para.appendChild(t);
+        leftdiv.appendChild(para); 
+      }
+    }
+    </script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body onload="readdata()">
+    <div class="container" style="margin-top:20px">
+      <h1>Document Analysis with Latent Dirichlet Allocation</h1>
+      <hr>
+      <ul class="nav nav-tabs">
+        <li role="presentation"><a href="lda.html">Documents</a></li>
+        <li role="presentation"><a href="topic.html">Topics</a></li>
+        <li role="presentation" class="active"><a href="#">Words</a></li>
+        <li role="presentation"><a href="#">About</a></li>
+      </ul>
+      <div id="leftdiv" >
+        
+      </div>
+      
+
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
